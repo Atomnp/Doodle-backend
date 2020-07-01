@@ -15,6 +15,6 @@ router.post("/getUsersPost/:userId", isAuth, postController.getUserPosts);
 router.post("/like/:postId", isAuth, postController.likePost);
 router.post("/comment/:postId", isAuth, postController.commentPost);
 router.post("/deletePost/:postId", isAuth, postController.deletePost);
-router.post("/getSinglePost/:postId", isAuth, postController.getSinglePost);
+router.get("/getSinglePost/:postId", postController.getSinglePost);
 
 module.exports = router;
