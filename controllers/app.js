@@ -18,7 +18,9 @@ exports.postImageFromTinyMce=(req,res,next)=>{
 
 
 exports.getProfile = (req, res, next) => {
+
   const userId=req.params.userId;
+  console.log("getProfile printing userId",userId);
 
   User.findById(userId).populate({
     path:'posts',
