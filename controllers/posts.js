@@ -72,6 +72,7 @@ exports.getSinglePost = (req, res, next) => {
     .then((post) => {
       //console.log(post);
       res.json({
+        title:post.title,
         username: post.user.name,
         content: post.content,
         userId: post.user._id,
