@@ -39,9 +39,7 @@ exports.getUserPosts=(req,res,next)=>{
 }
 
 exports.updatePost = (req, res, next) => {
-
-  //console.log("----------------------------------------------------");
-  //console.log(req.body);
+  let imagesObject = JSON.parse(req.body.images);
   const postId = req.body.postId;
   //console.log(postId);
   Post.findOne({ _id: postId })
@@ -49,7 +47,7 @@ exports.updatePost = (req, res, next) => {
       //console.log(post);
       post.title = req.body.title;
       post.content = req.body.content;
-      //console.log("post.images",post.images)
+      post.images=imagesObject.images;
       post.save();
     })
     .then((post) => {
