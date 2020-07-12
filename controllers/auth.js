@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const cryptoRandomString = require("crypto-random-string");
 
 exports.postSignUp = (req, res, next) => {
+  console.log("signup in backend");
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     //console.log(errors);
@@ -47,8 +48,6 @@ exports.postSignUp = (req, res, next) => {
         })
         .then((result) => {
           //Send email to the user for verification
-          //////////////////////////////////////////
-
           let transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
