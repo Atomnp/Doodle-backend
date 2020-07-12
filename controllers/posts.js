@@ -76,7 +76,9 @@ exports.getSinglePost = (req, res, next) => {
         content: post.content,
         userId: post.user._id,
         comments:post.comments,
-        id:post._id
+        id:post._id,
+        likes:post.likes,
+        likers:post.likers
       });
     })
     .catch((err) => {
@@ -118,7 +120,9 @@ exports.commentPost = (req, res, next) => {
 };
 
 exports.likePost = (req, res, next) => {
+  console.log("in like post");
   const postId = req.params.postId;
+  console.log(postId);
   //console.log("postID", postId);
 
   //console.log("in a like post");
