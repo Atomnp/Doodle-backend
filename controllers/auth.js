@@ -167,7 +167,8 @@ exports.verifyUser = (req, res) => {
       if (user.verificationToken === req.query.token) {
         user
           .update({ emailVerified: true })
-          .then((user) => res.json({ message: "Email Verification complete." }))
+          .then((user) => res.json({ message: "Email Verification complete." })
+          )
           .catch((err) => res.json("Token validation failed. Try again."));
       } else {
         return res.json({ message: "Token not valid. Try again." });
