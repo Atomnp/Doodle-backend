@@ -75,6 +75,8 @@ exports.getSinglePost = (req, res, next) => {
         username: post.user.name,
         content: post.content,
         userId: post.user._id,
+        comments:post.comments,
+        id:post._id
       });
     })
     .catch((err) => {
