@@ -20,7 +20,7 @@ exports.postImageFromTinyMce=(req,res,next)=>{
 exports.getProfile = (req, res, next) => {
 
   const userId=req.params.userId;
-  console.log("getProfile printing userId",userId);
+  //console.log("getProfile printing userId",userId);
 
   User.findById(userId).populate({
     path:'posts',
@@ -30,7 +30,7 @@ exports.getProfile = (req, res, next) => {
     }}
   }).then(user=>{
     user.posts.map(post=>{
-      console.log(post.likes);
+      //console.log(post.likes);
     })
     totalPostsCount=user.posts.length;
     //console.log("logging user after populatinf ",user);
@@ -43,7 +43,7 @@ exports.getProfile = (req, res, next) => {
       totalPostsCount:totalPostsCount
     });
   }).catch(err=>{
-    console.log(err);
+    //console.log(err);
     if(!err.statusCode){
       err.statusCode=500;
     }
@@ -52,12 +52,12 @@ exports.getProfile = (req, res, next) => {
 
 };
 exports.updateProfile=(req,res,next)=>{
-  console.log("in update profile");
+  //console.log("in update profile");
 
   let oldImageUrl;
   const defaultImage="images\\default.jpeg";
   const userId=req.params.userId;
-  console.log(">>>>>",userId,req.userId,userId==req.userId);
+  //console.log(">>>>>",userId,req.userId,userId==req.userId);
   if(userId!=req.userId){
     return res.json({
       messege:"you can only edit your profile"
@@ -69,21 +69,21 @@ exports.updateProfile=(req,res,next)=>{
       user.email=req.body.email;
      if(req.files[0] && user.imageUrl!==defaultImage)
      {
-       console.log("right condition iffile is added");
+       //console.log("right condition iffile is added");
         oldImageUrl=user.imageUrl;
         user.imageUrl=req.files[0].path;
         deleteStaticImage(oldImageUrl);
       }
       else if(req.files[0] && user.imageUrl===defaultImage)
       {
-        console.log("file provided and old was default")
+        //console.log("file provided and old was default")
 
         user.imageUrl=req.files[0].path;
       }
       else{
-        console.log("no condition matched");
+        //console.log("no condition matched");
         if(req.files[0]){
-          console.log("file provided");
+          //console.log("file provided");
         }
       }
       user.save();
@@ -95,21 +95,21 @@ exports.updateProfile=(req,res,next)=>{
       
         })
  }).catch(err=>{
-     console.log(err);
+     //console.log(err);
      next(err);
  })
 }
 
 exports.addFile=(req,res,next)=>{
-  console.log("in add file");
-  console.log(req.files)
+  //console.log("in add file");
+  //console.log(req.files)
  
 
   const downloads=new Downloads({
     fileUrl:req.files[0].path
   })
   downloads.save().then(result=>{
-    console.log("file saved to the database sucessfully");
+    //console.log("file saved to the database sucessfully");
 
     res.json({
       messege:"mission sucessfu;"
@@ -117,7 +117,7 @@ exports.addFile=(req,res,next)=>{
   });
 }
 exports.downloadFile=(req,res,next)=>{
-  console.log("in download file");
+  //console.log("in download file");
   const fileId=req.params.fileId
   
   Downloads.findById(fileId).then(file=>{
@@ -127,13 +127,13 @@ exports.downloadFile=(req,res,next)=>{
 
 
   }).catch(err=>{
-    console.log("bei catch");
-    console.log(err);
+    //console.log("bei catch");
+    //console.log(err);
   })
 }
 
 exports.getDownloadFiles=(req,res,next)=>{
-  console.log("in get download files");
+  //console.log("in get download files");
   
   Downloads.find().then(files=>{
     res.json({files:files});
@@ -146,8 +146,8 @@ exports.getDownloadFiles=(req,res,next)=>{
 const deleteStaticImage=(imagePath)=>{
   let completePath=path.join(__dirname,'..',imagePath);
   fs.unlink(completePath,err=>{
-      console.log("file unlink error");
-      console.log(err);
+      //console.log("file unlink error");
+      //console.log(err);
   })
   
 }

@@ -17,8 +17,8 @@ exports.getUserPosts=(req,res,next)=>{
 
   Post.find({user:req.params.userId}).countDocuments().then(number=>{
     totalPostsCount=number;
-    console.log("totalPostscount",totalPostsCount);
-    console.log("currentPate",currentPage);
+    //console.log("totalPostscount",totalPostsCount);
+    //console.log("currentPate",currentPage);
     noOfPostsInHorizontabBar=totalPostsCount>postPerPage?postPerPage:totalPostsCount;
     
     Post.find({user:req.params.userId})
@@ -33,22 +33,23 @@ exports.getUserPosts=(req,res,next)=>{
     })
 
   }).catch(err=>{
-    console.log(err);
+    //console.log(err);
     next(err);
   })
 }
 
 exports.updatePost = (req, res, next) => {
 
-  console.log("----------------------------------------------------");
-  console.log(req.body);
+  //console.log("----------------------------------------------------");
+  //console.log(req.body);
   const postId = req.body.postId;
-  console.log(postId);
+  //console.log(postId);
   Post.findOne({ _id: postId })
     .then((post) => {
-      console.log(post);
+      //console.log(post);
       post.title = req.body.title;
       post.content = req.body.content;
+      //console.log("post.images",post.images)
       post.save();
     })
     .then((post) => {
@@ -59,7 +60,7 @@ exports.updatePost = (req, res, next) => {
       emitPostsUpdated();
     })
     .catch((err) => {
-      console.log(err);
+      //console.log(err);
       res.status(400).send(err);
     });
 };
@@ -79,7 +80,7 @@ exports.getSinglePost = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log("Couldn't get posts from database");
+      //console.log("Couldn't get posts from database");
     });
 };
 
@@ -134,20 +135,20 @@ exports.likePost = (req, res, next) => {
         User.findById(req.userId)
           .then((user) => {
             let updatedLikedPosts = [...user.likedPosts];
-            console.log("liked posts before updateing ", updatedLikedPosts);
+            //console.log("liked posts before updateing ", updatedLikedPosts);
             updatedLikedPosts = updatedLikedPosts.filter((post) => {
               return post != postId;
             });
-            console.log("liked posts after updateing ", updatedLikedPosts);
+            //console.log("liked posts after updateing ", updatedLikedPosts);
             user.likedPosts = updatedLikedPosts;
             return user.save();
           })
           .then((result) => {
             let updatedLikers = [...likers];
             updatedLikers = updatedLikers.filter((liker) => {
-              console.log("liker", liker);
-              console.log("req.userId", req.userId);
-              console.log("truthness", liker !== req.userId);
+              //console.log("liker", liker);
+              //console.log("req.userId", req.userId);
+              //console.log("truthness", liker !== req.userId);
               return liker != req.userId;
             });
             //console.log("updated likers ", updatedLikers);
@@ -167,7 +168,7 @@ exports.likePost = (req, res, next) => {
           })
           .then((result) => {
             let updatedLikers = [...likers];
-            // console.log(
+            // //console.log(
             //   "updated likers when liked is false before pushing",
             //   updatedLikers
             // );
@@ -178,7 +179,7 @@ exports.likePost = (req, res, next) => {
             post.save();
           })
           .catch((err) => {
-            console.log(err);
+            //console.log(err);
           });
       }
 
@@ -199,7 +200,7 @@ exports.deletePost = (req, res, next) => {
     if (req.userId == post.user) {
       if (post.images.length > 0) {
         post.images.map((image) => {
-          console.log("image", image);
+          //console.log("image", image);
           deleteStaticImage(image);
         });
       }
@@ -223,11 +224,11 @@ exports.deletePost = (req, res, next) => {
               });
             })
             .catch((err) => {
-              console.log(err);
+              //console.log(err);
             });
         })
         .catch((err) => {
-          console.log("Couldn't get posts from database");
+          //console.log("Couldn't get posts from database");
         });
     } else {
       return;
@@ -243,7 +244,7 @@ exports.getPosts = (req, res, next) => {
   let postsPerPage = 7;
   let currentPage = req.body.currentPage;
 
-  // console.log("in get posts function with query " + req.body.query);
+  // //console.log("in get posts function with query " + req.body.query);
   let query = {};
   if (
     req.body.query !== "" &&
@@ -274,7 +275,7 @@ exports.getPosts = (req, res, next) => {
             .limit(postsPerPage)
 
             .then((posts) => {
-              // console.log("sideBarPosts", sideBarPosts);
+              // //console.log("sideBarPosts", sideBarPosts);
 
               noOfPosts = posts.length;
               res.json({
@@ -289,7 +290,7 @@ exports.getPosts = (req, res, next) => {
         });
     })
     .catch((err) => {
-      console.log(err);
+      //console.log(err);
     });
 };
 
@@ -309,7 +310,7 @@ exports.createPost = (req, res, next) => {
   });
   User.findById(req.body.userId)
     .then((user) => {
-      // console.log("adding user to post");
+      // //console.log("adding user to post");
       updatedPosts = [...user.posts];
       updatedPosts.push(newPost);
       user.posts = updatedPosts;
@@ -317,8 +318,8 @@ exports.createPost = (req, res, next) => {
     })
     .then()
     .catch((err) => {
-      console.log("user save failed");
-      console.log(err);
+      //console.log("user save failed");
+      //console.log(err);
     });
 
   newPost
@@ -331,7 +332,7 @@ exports.createPost = (req, res, next) => {
       emitPostsUpdated();
     })
     .catch((err) => {
-      console.log(err);
+      //console.log(err);
       res.status(400).send(err);
     });
 };
@@ -339,7 +340,7 @@ const deleteStaticImage = (imagePath) => {
   if (imagePath === null || imagePath === undefined) return;
   let completePath = path.join(__dirname, "..", imagePath);
   fs.unlink(completePath, (err) => {
-    console.log("File unlink error");
-    console.log(err);
+    //console.log("File unlink error");
+    //console.log(err);
   });
 };

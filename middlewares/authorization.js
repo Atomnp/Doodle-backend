@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 
 
 module.exports=(req,res,next)=>{
-    console.log("in authorization middleware")
+    //console.log("in authorization middleware")
     const authHeader=req.header('Authorization');
-    console.log(authHeader);
+    //console.log(authHeader);
     if(!authHeader){
         return res.status(401).json({
             message:"not authorized"
@@ -17,7 +17,7 @@ module.exports=(req,res,next)=>{
         decodedToken=jwt.verify(token,'thisissexretkey')
     }
     catch(err){
-        console.log("token not verified");
+        //console.log("token not verified");
         err.statusCode=422;
         throw err;
     }

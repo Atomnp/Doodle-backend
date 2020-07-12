@@ -9,7 +9,7 @@ const server = require("http").createServer(app);
 
 const io = require("socket.io")(server);
 io.on("connection", (socket) => {
-  console.log("user connected! (msg from socket)");
+  //console.log("user connected! (msg from socket)");
 });
 
 //Emit post changed event to all conneted sockets
@@ -27,7 +27,7 @@ const appRoutes = require("./router/appRoutes");
 //for image storage
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
-    console.log(file);
+    //console.log(file);
     if (file.fieldname === "uploadFile") {
       cb(null, "files");
     } else {
@@ -42,7 +42,7 @@ const fileStorage = multer.diskStorage({
 
 //filter to store different immage extensions
 const fileFilter = (req, file, cb) => {
-  console.log(file);
+  //console.log(file);
   if (file.fieldname === "uploadFile") {
     cb(null, true);
   } else if (
@@ -73,7 +73,7 @@ app.use(appRoutes);
 
 //Error handler middleware
 app.use((error, req, res, next) => {
-  console.log(error);
+  //console.log(error);
   const message = error.message;
   let statusCode;
   if (error.statusCode) {
@@ -81,7 +81,7 @@ app.use((error, req, res, next) => {
   } else {
     statusCode = 500;
   }
-  console.log("sucessfully in error handling function in app.js");
+  //console.log("sucessfully in error handling function in app.js");
   res.status(statusCode).json({
     message: message,
   });
@@ -99,9 +99,9 @@ mongoose
     useCreateIndex: true,
   })
   .then(() => {
-    console.log("Connected to the database sucessfully");
+    //console.log("Connected to the database sucessfully");
     server.listen(8080);
   })
   .catch((err) => {
-    console.log(err);
+    //console.log(err);
   });

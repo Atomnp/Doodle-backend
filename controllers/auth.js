@@ -8,7 +8,7 @@ const cryptoRandomString = require("crypto-random-string");
 exports.postSignUp = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors);
+    //console.log(errors);
     var err = new Error("error occurd in backend validation");
     err.statusCode = 401;
     throw err;
@@ -68,12 +68,12 @@ exports.postSignUp = (req, res, next) => {
           };
           transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
-              console.log(error);
+              //console.log(error);
               return res.json({
                 message: "Something went wrong.",
               });
             } else {
-              console.log("Email sent: " + info.response);
+              //console.log("Email sent: " + info.response);
               return res.json({
                 message: "User creation sucessfull. Email sent!",
               });
@@ -138,7 +138,7 @@ exports.postLogIn = (req, res, next) => {
           );
         })
         .then((token) => {
-          console.log("user signed in sucessfully");
+          //console.log("user signed in sucessfully");
           res.status(201).json({
             token: token,
             userId: storedUserId,
@@ -175,7 +175,7 @@ exports.verifyUser = (req, res) => {
       }
     })
     .catch((e) => {
-      console.log(e);
+      //console.log(e);
       return res.json({ message: "Something went wrong." });
     });
 };
@@ -207,10 +207,10 @@ exports.confirmUser = (req, res) => {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
+      //console.log(error);
       return res.json({ message: "Something went wrong." });
     } else {
-      console.log("Email sent: " + info.response);
+      //console.log("Email sent: " + info.response);
       return res.json({ message: "Email sent!" });
     }
   });
