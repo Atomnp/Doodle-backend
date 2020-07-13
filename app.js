@@ -99,7 +99,7 @@ mongoose
     useCreateIndex: true,
   })
   .then(() => {
-    //console.log("Connected to the database sucessfully");
+    console.log("Connected to the database sucessfully");
     server.listen(8080);
   })
   .catch((err) => {
