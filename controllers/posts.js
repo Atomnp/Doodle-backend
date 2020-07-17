@@ -5,7 +5,35 @@ var mongoose = require("mongoose");
 const User = require("../models/user");
 const path = require("path");
 const fs = require("fs");
+const { update } = require("../models/user");
 
+
+exports.removeComment = (req, res, next) => {
+  console.log("removeComment");
+  const postId = req.params.postId;
+  //console.log(postId);
+  Post.findOne({ _id: postId })
+    .then((post) => {
+      //console.log(post);
+      let updatedComments=[];
+      updatedComments=[...post.comments];
+      updatedComments=post.comments.filter(comment=>{
+        return (comment._id.toString()!==req.body.id.toString());
+      })
+
+      post.comments=updatedComments;
+      post.save();
+    })
+    .then((post) => {
+      res.json({
+        messege: "comments updated to database",
+      });
+    })
+    .catch((err) => {
+      //console.log(err);
+      res.status(400).send(err);
+    });
+};
 exports.getUserPosts=(req,res,next)=>{
  
   let currentPage=req.body.currentPage;
