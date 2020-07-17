@@ -16,7 +16,7 @@ exports.removeComment = (req, res, next) => {
     .then((post) => {
       //console.log(post);
       let updatedComments=[];
-      updatedComments=[...post.comments];
+      updatedComments=[...post.comments];             
       updatedComments=post.comments.filter(comment=>{
         return (comment._id.toString()!==req.body.id.toString());
       })
