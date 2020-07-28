@@ -30,13 +30,14 @@ exports.postSignUp = (req, res, next) => {
         user[0].save();
 
         
-        
+        setTimeout(()=>deleteUnverifiedUser(user[0]._id), 1000 * 60 * 60 * 24);
         confirmUser({
           userEmail:user[0].email,
           id:user[0]._id,
           verificationToken:verificationToken
         },
           res);
+          
           return;
       }
 
@@ -64,6 +65,7 @@ exports.postSignUp = (req, res, next) => {
           return user.save();
         })
         .then((result) => {
+          setTimeout(()=>deleteUnverifiedUser(result._id), 1000 * 60 * 60 * 24);
           //Send email to the user for verification
           let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -229,3 +231,19 @@ const confirmUser = ({userEmail,id,verificationToken},res) => {
     }
   });
 };
+
+const deleteUnverifiedUser=(id)=>{
+  console.log("deleteUnverified userCalled");
+  User.findById(id).then(user=>{
+    if(user.emailVerified===false){
+      console.log("emailVerified=false")
+      User.findByIdAndDelete(id).then(result=>{
+        console.log(result);
+        User.find().then(users=>{
+          console.log("users after deleting");
+          console.log(users);
+        })
+      })
+    }
+  }) 
+}

@@ -24,6 +24,7 @@ const authRoute = require("./router/auth");
 const postRoute = require("./router/posts");
 const appRoutes = require("./router/appRoutes");
 
+
 //for image storage
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
