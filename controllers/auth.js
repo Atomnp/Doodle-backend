@@ -17,10 +17,27 @@ exports.postSignUp = (req, res, next) => {
   //check if user with that email already exists
   User.find({ email: req.body.email })
     .then((user) => {
-      if (user.length > 0) {
+      
+      if (user.length > 0 && user[0].emailVerified===true) {
         return res.status(422).json({
           message: "User with this Email already exists",
         });
+      }
+      
+      if(user.length>0 && user[0].emailVerified===false){
+        let verificationToken = cryptoRandomString({ length: 10, type: "url-safe" });    
+        user[0].verificationToken = verificationToken;
+        user[0].save();
+
+        
+        
+        confirmUser({
+          userEmail:user[0].email,
+          id:user[0]._id,
+          verificationToken:verificationToken
+        },
+          res);
+          return;
       }
 
       const unHashedpassword = req.body.password;
@@ -156,7 +173,8 @@ exports.postLogIn = (req, res, next) => {
 };
 
 exports.verifyUser = (req, res) => {
-  //console.log(req.query.id + " " + req.query.token);
+  console.log("in verify user");
+  console.log(req.query.id + " " + req.query.token);
   User.findById(req.query.id)
     .then((user) => {
       if (user === null) {
@@ -180,7 +198,8 @@ exports.verifyUser = (req, res) => {
     });
 };
 
-exports.confirmUser = (req, res) => {
+const confirmUser = ({userEmail,id,verificationToken},res) => {
+ 
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -190,16 +209,10 @@ exports.confirmUser = (req, res) => {
     },
   });
 
-  let verificationToken = cryptoRandomString({ length: 10, type: "url-safe" });
-
-  User.findById(req.userId).then((user) => {
-    user.verificationToken = verificationToken;
-    user.save();
-  });
-  let verificationLink = `http://localhost:8080/verify?id=${req.userId}&token=${verificationToken}`;
+  let verificationLink = `http://localhost:8080/auth/verify?id=${id}&token=${verificationToken}`;
   var mailOptions = {
-    from: "noreply@doodle.com",
-    to: req.userEmail,
+    from:"doodle.com",
+    to: userEmail,
     subject: "Sending Email using Node.js",
     text:
       "Click the following link to verify your email. \n" + verificationLink,
@@ -207,7 +220,8 @@ exports.confirmUser = (req, res) => {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      //console.log(error);
+      console.log("error occured");
+      console.log(error);
       return res.json({ message: "Something went wrong." });
     } else {
       //console.log("Email sent: " + info.response);
