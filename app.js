@@ -4,9 +4,14 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
-const helmet =require('helmet');
+const helmet=require('helmet');
 
 const server = require("http").createServer(app);
+
+const io = require("socket.io")(server);
+io.on("connection", (socket) => {
+  //console.log("user connected! (msg from socket)");
+});
 
 //Emit post changed event to all conneted sockets
 const emitPostsUpdated = function () {
@@ -20,7 +25,7 @@ const authRoute = require("./router/auth");
 const postRoute = require("./router/posts");
 const appRoutes = require("./router/appRoutes");
 
-app.use(helmet());
+
 //for image storage
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -52,11 +57,9 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
-
-
-app.use(cors());
-
+app.use(helmet());
 //for the form data
+app.use(cors());
 app.use(bodyParser.json());
 
 //this add req.file file attribute in the request object which contentsfile we picked in frontnend
@@ -90,7 +93,7 @@ app.use((error, req, res, next) => {
 const myUrl =
   "mongodb+srv://aayushlamichhane:clfa5b95b4@cluster0-cqxay.gcp.mongodb.net/SocialSite?retryWrites=true&w=majority";
 const yourUrl =
-  `${process.env.MONGO_URL}`;
+  "mongodb+srv://root:root123@cluster0-vy6ab.mongodb.net/SocialSite";
 mongoose
   .connect(yourUrl, {
     useNewUrlParser: true,
@@ -99,9 +102,7 @@ mongoose
   })
   .then(() => {
     console.log("Connected to the database sucessfully");
-    console.log(process.env.port);
-    server.listen(process.env.PORT || 8080);
-    res.send("fuck")
+    server.listen(process.env.PORT||8080);
   })
   .catch((err) => {
     //console.log(err);
