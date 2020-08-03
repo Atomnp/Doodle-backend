@@ -93,7 +93,7 @@ app.use((error, req, res, next) => {
 const myUrl =
   "mongodb+srv://aayushlamichhane:clfa5b95b4@cluster0-cqxay.gcp.mongodb.net/SocialSite?retryWrites=true&w=majority";
 const yourUrl =
-  "mongodb+srv://root:root123@cluster0-vy6ab.mongodb.net/SocialSite";
+  `${process.env.MONGO_URL}`;
 mongoose
   .connect(yourUrl, {
     useNewUrlParser: true,
