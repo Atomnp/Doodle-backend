@@ -24,7 +24,7 @@ const multer = require("multer");
 const authRoute = require("./router/auth");
 const postRoute = require("./router/posts");
 const appRoutes = require("./router/appRoutes");
-
+app.use(cors());
 app.use(helmet());
 //for image storage
 const fileStorage = multer.diskStorage({
@@ -59,7 +59,7 @@ const fileFilter = (req, file, cb) => {
 };
 
 //for the form data
-app.use(cors());
+
 app.use(bodyParser.json());
 
 //this add req.file file attribute in the request object which contentsfile we picked in frontnend
