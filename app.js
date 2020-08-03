@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const path = require("path");
+const helmet =require('helmet');
 
 const server = require("http").createServer(app);
 
@@ -24,7 +25,7 @@ const authRoute = require("./router/auth");
 const postRoute = require("./router/posts");
 const appRoutes = require("./router/appRoutes");
 
-
+app.use(helmet());
 //for image storage
 const fileStorage = multer.diskStorage({
   destination: function (req, file, cb) {
