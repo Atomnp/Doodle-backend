@@ -8,11 +8,6 @@ const helmet =require('helmet');
 
 const server = require("http").createServer(app);
 
-const io = require("socket.io")(server);
-io.on("connection", (socket) => {
-  //console.log("user connected! (msg from socket)");
-});
-
 //Emit post changed event to all conneted sockets
 const emitPostsUpdated = function () {
   io.emit("postsUpdated");
