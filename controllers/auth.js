@@ -206,8 +206,8 @@ const confirmUser = ({userEmail,id,verificationToken},res) => {
     service: "gmail",
     auth: {
       //Author email needs less secure apps switch to be off
-      user: "doodleleinc42@gmail.com",
-      pass: "()hQwEr#$%45",
+      user: "naemaaerp@gmail.com",
+      pass: "nuwakot123",
     },
   });
 

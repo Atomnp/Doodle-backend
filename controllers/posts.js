@@ -97,6 +97,7 @@ exports.getSinglePost = (req, res, next) => {
   Post.findOne({ _id: postId })
     .populate("user")
     .then((post) => {
+      console.log(post.updatedAt);
       //console.log(post);
       res.json({
         title:post.title,
@@ -106,7 +107,8 @@ exports.getSinglePost = (req, res, next) => {
         comments:post.comments,
         id:post._id,
         likes:post.likes,
-        likers:post.likers
+        likers:post.likers,
+        updatedAt:post.updatedAt,
       });
     })
     .catch((err) => {
