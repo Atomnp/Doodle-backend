@@ -6,6 +6,7 @@ const User = require("../models/user");
 const path = require("path");
 const fs = require("fs");
 const { update } = require("../models/user");
+const { post } = require("../router/auth");
 
 
 exports.removeComment = (req, res, next) => {
@@ -109,6 +110,7 @@ exports.getSinglePost = (req, res, next) => {
         likes:post.likes,
         likers:post.likers,
         updatedAt:post.updatedAt,
+        imageUrl:post.user.imageUrl,
       });
     })
     .catch((err) => {
@@ -304,13 +306,17 @@ exports.getPosts = (req, res, next) => {
         })
         .then((result) => {
           return Post.find(query)
+            .populate('user','name')
             .sort(req.body.sortingMethod)
             .skip(postsPerPage * (currentPage - 1))
             .limit(postsPerPage)
-
             .then((posts) => {
-              // //console.log("sideBarPosts", sideBarPosts);
-
+              console.log(posts);
+              
+              posts.map(post=>{
+                post.username=post.user.name;
+                post.user=post.user._id;
+              })
               noOfPosts = posts.length;
               res.json({
                 posts: posts,
