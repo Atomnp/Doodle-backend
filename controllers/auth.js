@@ -17,28 +17,34 @@ exports.postSignUp = (req, res, next) => {
   //check if user with that email already exists
   User.find({ email: req.body.email })
     .then((user) => {
-      
-      if (user.length > 0 && user[0].emailVerified===true) {
+      if (user.length > 0 && user[0].emailVerified === true) {
         return res.status(422).json({
           message: "User with this Email already exists",
         });
       }
-      
-      if(user.length>0 && user[0].emailVerified===false){
-        let verificationToken = cryptoRandomString({ length: 10, type: "url-safe" });    
+
+      if (user.length > 0 && user[0].emailVerified === false) {
+        let verificationToken = cryptoRandomString({
+          length: 10,
+          type: "url-safe",
+        });
         user[0].verificationToken = verificationToken;
         user[0].save();
 
-        
-        setTimeout(()=>deleteUnverifiedUser(user[0]._id), 1000 * 60 * 60 * 24);
-        confirmUser({
-          userEmail:user[0].email,
-          id:user[0]._id,
-          verificationToken:verificationToken
-        },
-          res);
-          
-          return;
+        setTimeout(
+          () => deleteUnverifiedUser(user[0]._id),
+          1000 * 60 * 60 * 24
+        );
+        confirmUser(
+          {
+            userEmail: user[0].email,
+            id: user[0]._id,
+            verificationToken: verificationToken,
+          },
+          res
+        );
+
+        return;
       }
 
       const unHashedpassword = req.body.password;
@@ -53,7 +59,7 @@ exports.postSignUp = (req, res, next) => {
             password: hashedPassword,
             imageUrl: "images\\default.jpeg",
             posts: [],
-            likedPosts:[]
+            likedPosts: [],
           });
 
           let verificationToken = cryptoRandomString({
@@ -65,7 +71,10 @@ exports.postSignUp = (req, res, next) => {
           return user.save();
         })
         .then((result) => {
-          setTimeout(()=>deleteUnverifiedUser(result._id), 1000 * 60 * 60 * 24);
+          setTimeout(
+            () => deleteUnverifiedUser(result._id),
+            1000 * 60 * 60 * 24
+          );
           //Send email to the user for verification
           let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -75,7 +84,7 @@ exports.postSignUp = (req, res, next) => {
               pass: "nuwakot123",
             },
           });
-          let verificationLink = `http://localhost:8080/auth/verify?id=${result._id}&token=${result.verificationToken}`;
+          let verificationLink = `https://doodle-backend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
           var mailOptions = {
             from: "noreply@doodle.com",
             to: result.email,
@@ -149,7 +158,7 @@ exports.postLogIn = (req, res, next) => {
               userId: storedUserId,
               userEmail: storedEmail,
               username: storedName,
-              emailVerified:true
+              emailVerified: true,
             },
             "thisissexretkey",
             { expiresIn: "1h" }
@@ -187,8 +196,7 @@ exports.verifyUser = (req, res) => {
       if (user.verificationToken === req.query.token) {
         user
           .update({ emailVerified: true })
-          .then((user) => res.json({ message: "Email Verification complete." })
-          )
+          .then((user) => res.json({ message: "Email Verification complete." }))
           .catch((err) => res.json("Token validation failed. Try again."));
       } else {
         return res.json({ message: "Token not valid. Try again." });
@@ -200,8 +208,8 @@ exports.verifyUser = (req, res) => {
     });
 };
 
-const confirmUser = ({userEmail,id,verificationToken},res) => {
- 
+const confirmUser = ({ userEmail, id, verificationToken }, res) => {
+  console.log("In confirm user function");
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -211,11 +219,11 @@ const confirmUser = ({userEmail,id,verificationToken},res) => {
     },
   });
 
-  let verificationLink = `http://localhost:8080/auth/verify?id=${id}&token=${verificationToken}`;
+  let verificationLink = `https://doodle-backend.herokuapp.com/auth/verify?id=${id}&token=${verificationToken}`;
   var mailOptions = {
-    from:"doodle.com",
+    from: "doodle.com",
     to: userEmail,
-    subject: "Sending Email using Node.js",
+    subject: "Verify you email now",
     text:
       "Click the following link to verify your email. \n" + verificationLink,
   };
@@ -226,24 +234,24 @@ const confirmUser = ({userEmail,id,verificationToken},res) => {
       console.log(error);
       return res.json({ message: "Something went wrong." });
     } else {
-      //console.log("Email sent: " + info.response);
+      console.log("Email sent: " + info.response);
       return res.json({ message: "Email sent!" });
     }
   });
 };
 
-const deleteUnverifiedUser=(id)=>{
+const deleteUnverifiedUser = (id) => {
   console.log("deleteUnverified userCalled");
-  User.findById(id).then(user=>{
-    if(user.emailVerified===false){
-      console.log("emailVerified=false")
-      User.findByIdAndDelete(id).then(result=>{
+  User.findById(id).then((user) => {
+    if (user.emailVerified === false) {
+      console.log("emailVerified=false");
+      User.findByIdAndDelete(id).then((result) => {
         console.log(result);
-        User.find().then(users=>{
+        User.find().then((users) => {
           console.log("users after deleting");
           console.log(users);
-        })
-      })
+        });
+      });
     }
-  }) 
-}
+  });
+};
