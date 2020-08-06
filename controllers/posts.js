@@ -10,7 +10,7 @@ const { post } = require("../router/auth");
 
 
 exports.removeComment = (req, res, next) => {
-  console.log("removeComment");
+
   const postId = req.params.postId;
   //console.log(postId);
   Post.findOne({ _id: postId })
@@ -253,7 +253,7 @@ exports.deletePost = (req, res, next) => {
               return user.save();
             })
             .then(() => {
-              Post.find().then((updatedPosts) => {
+              Post.find({approved:true}).then((updatedPosts) => {
                 res.json({
                   posts: updatedPosts,
                 });
@@ -281,13 +281,14 @@ exports.getPosts = (req, res, next) => {
   let currentPage = req.body.currentPage;
 
   // //console.log("in get posts function with query " + req.body.query);
-  let query = {};
+  let query = {approved:true};
   if (
     req.body.query !== "" &&
     req.body.query !== null &&
     req.body.query !== undefined
   ) {
     query = {
+      approved:true,
       $text: { $search: req.body.query },
     };
   }
@@ -347,6 +348,7 @@ exports.createPost = (req, res, next) => {
     likes: 0,
     likers: [],
     username: req.username,
+    approved:false,
   });
   User.findById(req.body.userId)
     .then((user) => {

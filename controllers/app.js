@@ -32,6 +32,8 @@ exports.getProfile = (req, res, next) => {
       //console.log(post.likes);
     })
     totalPostsCount=user.posts.length;
+    // console.log("user posts ");
+    // console.log(user.posts);
     //console.log("logging user after populatinf ",user);
     res.status(200).json({
       name:user.name,
@@ -66,6 +68,7 @@ exports.updateProfile=(req,res,next)=>{
   User.findById(userId).then(user=>{
       user.name=req.body.name;
       user.email=req.body.email;
+      console.log("req.files",req.files);
      if(req.files[0] && user.imageUrl!==defaultImage)
      {
        //console.log("right condition iffile is added");
