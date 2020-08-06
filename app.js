@@ -94,7 +94,7 @@ app.use((error, req, res, next) => {
 //Load and connect to mongoose database
 const myUrl =
   "mongodb+srv://aayushlamichhane:clfa5b95b4@cluster0-cqxay.gcp.mongodb.net/SocialSite?retryWrites=true&w=majority";
-const yourUrl =
+const yourUrl =process.env.NODE_ENV==="production"?process.env.MONGO_URL:
   `mongodb+srv://root:root123@cluster0-vy6ab.mongodb.net/SocialSite`;
 mongoose
   .connect(yourUrl, {
