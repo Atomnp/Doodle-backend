@@ -55,7 +55,12 @@ const postSchema = new Schema(
     username: {
       type: String,
     },
+    approved: {
+      type:Boolean,
+      required:true
+    }
   },
+
   { timestamps: true }
 );
 postSchema.index({ title: "text" });

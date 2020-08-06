@@ -145,6 +145,10 @@ exports.postLogIn = (req, res, next) => {
       const storedEmail = user.email;
       const storedName = user.name;
       const inputPassword = req.body.password;
+      let isAdmin=process.env.ADMIN_EMAIL===storedEmail;
+      if(!process.env.NODE_ENV){
+        isAdmin=true;
+      }
       bcrypt
         .compare(inputPassword, user.password)
         .then((isEqual) => {
@@ -167,6 +171,7 @@ exports.postLogIn = (req, res, next) => {
         .then((token) => {
           //console.log("user signed in sucessfully");
           res.status(201).json({
+            isAdmin:isAdmin,
             token: token,
             userId: storedUserId,
             username: storedName,
@@ -209,7 +214,7 @@ exports.verifyUser = (req, res) => {
 };
 
 const confirmUser = ({ userEmail, id, verificationToken }, res) => {
-  console.log("In confirm user function");
+
   let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -241,15 +246,10 @@ const confirmUser = ({ userEmail, id, verificationToken }, res) => {
 };
 
 const deleteUnverifiedUser = (id) => {
-  console.log("deleteUnverified userCalled");
   User.findById(id).then((user) => {
     if (user.emailVerified === false) {
-      console.log("emailVerified=false");
       User.findByIdAndDelete(id).then((result) => {
-        console.log(result);
         User.find().then((users) => {
-          console.log("users after deleting");
-          console.log(users);
         });
       });
     }
