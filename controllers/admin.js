@@ -7,66 +7,36 @@ const fs = require("fs");
 
 
 exports.getPosts = (req, res, next) => {
-    let sideBarPosts = [];
-  
-    let noOfPosts;
-    let totalNoOfPosts;
+    let totalUnapprovedPosts=0;
+    let noOfUnapprovedPosts;
     let postsPerPage = 7;
     let currentPage = req.body.currentPage;
-  
-    // //console.log("in get posts function with query " + req.body.query);
-    let query = {approved:false};
-    if (
-      req.body.query !== "" &&
-      req.body.query !== null &&
-      req.body.query !== undefined
-    ) {
-      query = {
-        approved:false,
-        $text: { $search: req.body.query },
-      };
-    }
-  
-    Post.find(query)
-      .countDocuments()
-      .then((result) => {
-        totalNoOfPosts = result;
-        let numberOfPostInSideBar = totalNoOfPosts > 2 ? 3 : totalNoOfPosts;
-  
-        return Post.find()
-          .sort({ likes: -1 })
-          .limit(numberOfPostInSideBar)
-          .then((sidePosts) => {
-            sideBarPosts = sidePosts;
-          })
-          .then((result) => {
-            return Post.find(query)
-              .populate('user','name')
-              .sort(req.body.sortingMethod)
-              .skip(postsPerPage * (currentPage - 1))
-              .limit(postsPerPage)
-              .then((posts) => {
-                
-                
-                posts.map(post=>{
-                  post.username=post.user.name;
-                  post.user=post.user._id;
-                })
-                noOfPosts = posts.length;
-                res.json({
-                  posts: posts,
-                  sideBarPosts: sideBarPosts,
-                  totalPosts: totalNoOfPosts,
-                });
-              });
-          })
-          .catch((err) => {
-            throw err;
-          });
-      })
-      .catch((err) => {
-        //console.log(err);
-      });
+    Post.find({approved:false}).countDocuments().then(result=>{
+        console.log(result);
+        totalUnapprovedPosts=result;
+        return Post.find({approved:false})
+        .populate('user','name')
+        .sort(req.body.sortingMethod)
+        .skip(postsPerPage * (currentPage - 1))
+        .limit(postsPerPage)
+        .then((posts) => {
+
+        posts.map(post=>{
+            post.username=post.user.name;
+            post.user=post.user._id;
+        })
+        noOfUnapprovedPosts = posts.length;
+        console.log("number of un approved post in admin.js",totalUnapprovedPosts);
+        res.json({
+            posts: posts,
+            totalPosts: totalUnapprovedPosts,
+        });
+        })
+    })
+
+    .catch((err) => {
+    throw err;
+    });
   };
 
   exports.approvePost=(req,res,next)=>{
