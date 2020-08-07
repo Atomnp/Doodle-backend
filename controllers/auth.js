@@ -224,7 +224,7 @@ const confirmUser = ({ userEmail, id, verificationToken }, res) => {
     },
   });
 
-  let verificationLink = `httpsadsf://doodle-frontend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
+  let verificationLink = `https://doodle-frontend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
   var mailOptions = {
     from: "doodle.com",
     to: userEmail,
