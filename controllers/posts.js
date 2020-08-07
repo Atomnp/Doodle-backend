@@ -98,7 +98,7 @@ exports.getSinglePost = (req, res, next) => {
   Post.findOne({ _id: postId })
     .populate("user")
     .then((post) => {
-      console.log(post.updatedAt);
+
       //console.log(post);
       res.json({
         title:post.title,
@@ -152,9 +152,8 @@ exports.commentPost = (req, res, next) => {
 };
 
 exports.likePost = (req, res, next) => {
-  console.log("in like post");
   const postId = req.params.postId;
-  console.log(postId);
+
   //console.log("postID", postId);
 
   //console.log("in a like post");
@@ -229,6 +228,7 @@ exports.likePost = (req, res, next) => {
 };
 
 exports.deletePost = (req, res, next) => {
+  console.log("in delete post");
   const postId = req.params.postId;
 
   Post.findOne({ _id: postId }).then((post) => {
@@ -311,9 +311,7 @@ exports.getPosts = (req, res, next) => {
             .sort(req.body.sortingMethod)
             .skip(postsPerPage * (currentPage - 1))
             .limit(postsPerPage)
-            .then((posts) => {
-              console.log(posts);
-              
+            .then((posts) => {              
               posts.map(post=>{
                 post.username=post.user.name;
                 post.user=post.user._id;
