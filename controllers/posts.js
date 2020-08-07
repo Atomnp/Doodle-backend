@@ -299,7 +299,7 @@ exports.getPosts = (req, res, next) => {
       totalNoOfPosts = result;
       let numberOfPostInSideBar = totalNoOfPosts > 2 ? 3 : totalNoOfPosts;
 
-      return Post.find()
+      return Post.find({approved:true})
         .sort({ likes: -1 })
         .limit(numberOfPostInSideBar)
         .then((sidePosts) => {
