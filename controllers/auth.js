@@ -84,7 +84,7 @@ exports.postSignUp = (req, res, next) => {
               pass: "nuwakot123",
             },
           });
-          let verificationLink = `https://doodle-frontend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
+          let verificationLink = `https://doodle-backend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
           var mailOptions = {
             from: "noreply@doodle.com",
             to: result.email,
@@ -224,7 +224,7 @@ const confirmUser = ({ userEmail, id, verificationToken }, res) => {
     },
   });
 
-  let verificationLink = `https://doodle-frontend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
+  let verificationLink = `https://doodle-frontend.herokuapp.com/auth/verify?id=${id}&token=${verificationToken}`;
   var mailOptions = {
     from: "doodle.com",
     to: userEmail,
