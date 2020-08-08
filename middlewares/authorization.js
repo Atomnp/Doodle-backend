@@ -2,9 +2,11 @@ const jwt = require("jsonwebtoken");
 
 
 module.exports=(req,res,next)=>{
-    //console.log("in authorization middleware")
+    console.log("in authorization middleware")
     const authHeader=req.header('Authorization');
+    console.log("auth header", authHeader);
     if(!authHeader){
+        console.log("not authorized");
         return res.status(401).json({
             message:"not authorized"
         })

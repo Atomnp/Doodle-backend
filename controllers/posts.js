@@ -68,15 +68,18 @@ exports.getUserPosts=(req,res,next)=>{
 }
 
 exports.updatePost = (req, res, next) => {
+  console.log("in update post");
   let imagesObject = JSON.parse(req.body.images);
   const postId = req.body.postId;
   //console.log(postId);
+  console.log(imagesObject);
+  console.log(imagesObject.length);
   Post.findOne({ _id: postId })
     .then((post) => {
       //console.log(post);
       post.title = req.body.title;
       post.content = req.body.content;
-      post.images=imagesObject.images;
+      imagesObject.images.length!==0?post.images=imagesObject.images:null;
       post.save();
     })
     .then((post) => {
@@ -87,7 +90,7 @@ exports.updatePost = (req, res, next) => {
       emitPostsUpdated();
     })
     .catch((err) => {
-      //console.log(err);
+      console.log(err);
       res.status(400).send(err);
     });
 };

@@ -8,7 +8,7 @@ const { check, validationResult } = require("express-validator");
 
 router.post("/", isAuth, postController.createPost);
 
-router.put("/", isAuth, postController.updatePost);
+router.put("/updatePost", isAuth, postController.updatePost);
 
 router.post("/getPosts", postController.getPosts);
 router.post("/getUsersPost/:userId", isAuth, postController.getUserPosts);
