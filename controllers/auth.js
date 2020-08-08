@@ -24,6 +24,7 @@ exports.postSignUp = (req, res, next) => {
       }
 
       if (user.length > 0 && user[0].emailVerified === false) {
+        console.log("user exists but email is unverified");
         let verificationToken = cryptoRandomString({
           length: 10,
           type: "url-safe",
@@ -76,36 +77,14 @@ exports.postSignUp = (req, res, next) => {
             1000 * 60 * 60 * 24
           );
           //Send email to the user for verification
-          let transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              //Author email needs less secure apps switch to be off
-              user: "naemaaerp@gmail.com",
-              pass: "nuwakot123",
+          confirmUser(
+            {
+              userEmail: result.email,
+              id: result._id,
+              verificationToken: result.verificationToken,
             },
-          });
-          let verificationLink = `https://doodle-backend.herokuapp.com/auth/verify?id=${result._id}&token=${result.verificationToken}`;
-          var mailOptions = {
-            from: "noreply@doodle.com",
-            to: result.email,
-            subject: "Sending Email using Node.js",
-            text:
-              "Click the following link to verify your email. \n" +
-              verificationLink,
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              //console.log(error);
-              return res.json({
-                message: "Something went wrong.",
-              });
-            } else {
-              //console.log("Email sent: " + info.response);
-              return res.json({
-                message: "User creation sucessfull. Email sent!",
-              });
-            }
-          });
+            res
+          );
         })
         .catch((err) => {
           throw err;
@@ -208,41 +187,49 @@ exports.verifyUser = (req, res) => {
       }
     })
     .catch((e) => {
-      //console.log(e);
+      console.log(e);
       return res.json({ message: "Something went wrong." });
     });
 };
 
 const confirmUser = ({ userEmail, id, verificationToken }, res) => {
+  console.log("in confirm user ",userEmail,id,verificationToken);
+  let user=process.env.NODE_ENV?process.env.DOODLE_EMAIL:'naemaaerp@gmail.com';
+  let password=process.env.NODE_ENV?process.env.DOODLE_PASSWORD:'nuwakot123';
 
   let transporter = nodemailer.createTransport({
+    name:'doodle.com',
     service: "gmail",
     auth: {
       //Author email needs less secure apps switch to be off
-      user: process.env.DOODLE_EMAIL,
-      pass:process.env.DOODLE_PASSWORD,
+      user: user,
+      pass: password,
     },
   });
-
-  let verificationLink = `https://doodle-frontend.herokuapp.com/verify?id=${id}&token=${verificationToken}`;
+  const frontendUrl=process.env.NODE_ENV?"https://doodle-front-end.herokuapp.com":"`http://localhost:3000";
+  let verificationLink = `${frontendUrl}/verify?id=${id}&token=${verificationToken}`;
   var mailOptions = {
-    from: "doodle.com",
+    from: "DoodleFoundation@gmail.com",
     to: userEmail,
-    subject: "Verify you email now",
+    subject: "[Doodle Foundation] please verify your email to continue",
     text:
-      "Click the following link to verify your email. \n" + verificationLink,
+      "Click the following link to verify your email. \n" +
+      verificationLink,
   };
-
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log("error occured");
       console.log(error);
-      return res.json({ message: "Something went wrong." });
+      return res.json({
+        message: "Something went wrong.",
+      });
     } else {
-      console.log("Email sent: " + info.response);
-      return res.json({ message: "Email sent!" });
+      //console.log("Email sent: " + info.response);
+      return res.json({
+        message: "User creation sucessfull. Email sent!",
+      });
     }
   });
+
 };
 
 const deleteUnverifiedUser = (id) => {
