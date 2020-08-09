@@ -17,3 +17,6 @@ Doodle is blog like Knowledge sharing website created using node/express in the 
 ![Gif](https://github.com/AayushNeupane57/Doodle-backend/blob/master/doodle.gif)
 
 if you want to chek our work check here [link](https://doodle-front-end.herokuapp.com/)
+### created b
+Aayush lamichhane
+Aayush neupane
